@@ -1,0 +1,102 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - floor
+  - bullet
+  - enemy
+  - FxTemporaire
+  - Coin
+  - Ladder
+  - gai
+  - Audio
+  - obstacle
+  - win
+  - health
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - bullet
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: explosion
+    uniqueID: 2069384561
+    locked: 0
+  - name: hit
+    uniqueID: 1099371659
+    locked: 0
+  - name: Background
+    uniqueID: 776912941
+    locked: 0
+  - name: Tiles
+    uniqueID: 864254431
+    locked: 0
+  - name: Ladder
+    uniqueID: 3430604039
+    locked: 0
+  - name: Canvas
+    uniqueID: 1212670081
+    locked: 0
+  - name: Player
+    uniqueID: 2982844495
+    locked: 0
+  - name: Enemy
+    uniqueID: 3629906797
+    locked: 0
+  - name: coin
+    uniqueID: 1007877201
+    locked: 0
+  - name: gun
+    uniqueID: 4284746277
+    locked: 0
+  - name: bullet
+    uniqueID: 900950221
+    locked: 0
+  - name: gai
+    uniqueID: 3071773599
+    locked: 0
+  - name: cirle
+    uniqueID: 2096257759
+    locked: 0
+  - name: win
+    uniqueID: 328306457
+    locked: 0
+  - name: jumppad
+    uniqueID: 2117096869
+    locked: 0
+  - name: health
+    uniqueID: 2658902639
+    locked: 0
