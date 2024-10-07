@@ -8,6 +8,7 @@ public class CollsionHandling : MonoBehaviour
     public GameObject gamewinOj;
     public int coin = 0;
     public int health;
+    public bool isAlive = true;
     public TextMeshProUGUI starcoinText;
     public TextMeshProUGUI healthText;
     [SerializeField]
@@ -56,6 +57,7 @@ public class CollsionHandling : MonoBehaviour
             healthText.SetText(health.ToString());
             if (health == 0)
             {
+                isAlive = false;
                 gameoverOj.SetActive(true);
                 Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
                 Destroy(gameObject);
@@ -79,6 +81,7 @@ public class CollsionHandling : MonoBehaviour
             if (health == 0)
             {
                 Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+                isAlive = false;
                 Destroy(gameObject);
                 gameoverOj.SetActive(true);
             }

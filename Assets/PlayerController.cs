@@ -1,7 +1,9 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,12 +12,18 @@ public class PlayerController : MonoBehaviour
     Transform gunTransform;
     [SerializeField]
     GameObject bulletPrefab;
-    //[SerializeField]
-    //GameObject ExplosionPrefab, HitEffectPrefab;
-
    
+    public Button leftButton;
+    public Button rightButton;
+    public Button jumpButton;
+    public Button upButton;
+    public Button downButton;   
+
+    public float smoothTime = 0.1f;
+    private Vector2 currentVelocity = Vector2.zero;
+
     //public int coin = 0;
-    
+
     public bool isFacingRight = true;
     public float left_right;
     public float speed;
@@ -27,8 +35,14 @@ public class PlayerController : MonoBehaviour
    
     public float climbSpeed = 3f;
     private bool isClimbing = false;
-    //private bool canTakeDamage = true;
-    //private bool canCollectCoin = true;
+
+    public bool isMovingLeft = false;
+    public bool isMovingRight = false;
+    public bool jumpPressed = false;
+
+    private bool isMovingUp = false;
+    private bool isMovingDown = false;
+
     [SerializeField]
     //private float invulnerabilityTime = 0.5f;
     //public float minX = -28.6f;
@@ -46,49 +60,129 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         shootingSound = GetComponent<AudioSource>();
-       
-      
+
+        leftButton.onClick.AddListener(MoveLeft);
+        rightButton.onClick.AddListener(MoveRight);
+        jumpButton.onClick.AddListener(Jump);
+        upButton.onClick.AddListener(MoveUp);
+        downButton.onClick.AddListener(MoveDown);
+
+
+        jumpButton.onClick.AddListener(Jump);
     }
 
+   
     
+public void MoveLeft()
+{
+    left_right = -1;
+
+}
+    public void StopMoveLeft()
+    {
+        left_right = 0;
+    }
+
+public void MoveRight()
+{
+    left_right = 1;
+
+}
+public void StopMoveRight()
+{
+  left_right = 0;
+
+}
+    public void Jump()
+    {
+        if (allowJump)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, height);
+            allowJump = false;
+        }
+    }
+    public void MoveUp()
+    {
+        isMovingUp = true;
+        isMovingDown = false;
+    }
+    public void StopMoveUp()
+    {
+        isMovingUp = false;
+    }
+
+    public void MoveDown()
+    {
+        isMovingDown = true;
+        isMovingUp = false;
+    }
+    public void StopMoveDown()
+    {
+        isMovingDown = false;
+        
+    }
+
+    void StopClimb()
+    {
+        isMovingUp = false;
+        isMovingDown = false;
+    }
+
+
     void Update()
     {
         //float clampedX = Mathf.Clamp(transform.position.x, minX, maxX);
         //transform.position = new Vector2(clampedX, transform.position.y);
 
-        left_right = Input.GetAxisRaw("Horizontal");
+        //left_right = Input.GetAxisRaw("Horizontal");
         //move
-        rb.velocity = new Vector2(left_right * speed, rb.velocity.y); 
+        Vector2 targetVelocity = new Vector2(left_right * speed, rb.velocity.y);
+        //rb.velocity = new Vector2(left_right * speed, rb.velocity.y);
+        rb.velocity = Vector2.SmoothDamp(rb.velocity, targetVelocity, ref currentVelocity, smoothTime);
         flip();
+
         //anim
-        anim.SetFloat("move", Mathf.Abs(left_right));
-       
-
-        if (allowJump && !Input.GetKey(KeyCode.Space))
+        if (Mathf.Abs(left_right) > 0)
         {
-
-            doubleJump = false;
+            anim.SetFloat("move", Mathf.Abs(left_right));
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        else
         {
-
-            if (allowJump || doubleJump)
-            {
-                rb.velocity = new Vector2(rb.velocity.x, height);
-                doubleJump = !doubleJump;
-            }
+            anim.SetFloat("move", 0);
         }
-
-        if (Input.GetMouseButtonDown(0))
+        //anim.SetFloat("move", Mathf.Abs(left_right));
+        if (!Input.GetMouseButton(0))
         {
-            Debug.Log("create bullet");
-            GameObject bullet = Instantiate(bulletPrefab, gunTransform.position, Quaternion.identity);
-            shootingSound.clip = listAudios[0];
-            shootingSound.Play();
-            bullet.GetComponent<BulletController>().SetDirection(isFacingRight ? Vector2.right : Vector2.left);
-            bulletPrefab.SetActive(true);
-            Destroy(bullet, 2f);
+            left_right = 0;
         }
+            
+
+        //if (allowJump &&!Input.GetKey(KeyCode.Space))
+        //{
+
+        //    doubleJump = false;
+        //}
+        //if (allowJump && Input.GetKeyDown(KeyCode.Space))              
+        //{
+
+        //    if (allowJump || doubleJump)
+        //    {
+        //        rb.velocity = new Vector2(rb.velocity.x, height);
+        //        doubleJump = !doubleJump;
+        //    }
+
+        //}
+
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //    Debug.Log("create bullet");
+        //    GameObject bullet = Instantiate(bulletPrefab, gunTransform.position, Quaternion.identity);
+        //    shootingSound.clip = listAudios[0];
+        //    shootingSound.Play();
+        //    bullet.GetComponent<BulletController>().SetDirection(isFacingRight ? Vector2.right : Vector2.left);
+        //    bulletPrefab.SetActive(true);
+        //    Destroy(bullet, 2f);
+        //}
     }
 
     private void OnTriggerEnter2D(Collider2D collision) //ortherhitboxes
@@ -97,19 +191,8 @@ public class PlayerController : MonoBehaviour
         {
             allowJump = true;
         }
-        //if (collision.CompareTag("bullet") && canTakeDamage)
-        //{
-        //    TakeDamage();
+        
            
-        //}
-            //if (collision.CompareTag("Coin") && canCollectCoin)
-            //{
-            //CollectCoin(collision.gameObject);
-            
-            //coinSound.clip = listAudios[1];
-            //coinSound.Play();
-            
-        //}
 
             if(collision.CompareTag("Ladder"))
         {
@@ -128,6 +211,7 @@ public class PlayerController : MonoBehaviour
         {
             isClimbing = false;
             rb.gravityScale = 1f;
+            StopClimb();
         }
     }
      void flip()
@@ -141,14 +225,32 @@ public class PlayerController : MonoBehaviour
         }
     }
    
-   
+
     private void FixedUpdate()
     {
         if(isClimbing)
         {
-            float climbInput = Input.GetAxisRaw("Vertical");
+            float climbInput = 0;
+            if (isMovingUp)
+            {
+                climbInput = 1; 
+            }
+            else if (isMovingDown)
+            {
+                climbInput = -1; 
+            }
+            //float climbInput = Input.GetAxisRaw("Vertical");
             rb.velocity = new Vector2(rb.velocity.x, climbInput * climbSpeed);
         }
+    }
+    public void Fire()
+    {
+        Debug.Log("create bullet");
+        GameObject bullet = Instantiate(bulletPrefab, gunTransform.position, Quaternion.identity);
+        shootingSound.clip = listAudios[0];
+        shootingSound.Play();
+        bullet.GetComponent<BulletController>().SetDirection(isFacingRight ? Vector2.right : Vector2.left);
+        Destroy(bullet, 2f);
     }
 
 
