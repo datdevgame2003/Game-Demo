@@ -19,7 +19,7 @@ public class MainMenu : MonoBehaviour
     public void LoadGame()
     {
         clickButtonSound.Play();
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("Level1");
        
     }
     public void ExitGame()
