@@ -22,8 +22,6 @@ public class PlayerController : MonoBehaviour
     public float smoothTime = 0.1f;
     private Vector2 currentVelocity = Vector2.zero;
 
-    //public int coin = 0;
-
     public bool isFacingRight = true;
     public float left_right;
     public float speed;
@@ -131,13 +129,10 @@ public void StopMoveRight()
 
     void Update()
     {
-        //float clampedX = Mathf.Clamp(transform.position.x, minX, maxX);
-        //transform.position = new Vector2(clampedX, transform.position.y);
-
-        //left_right = Input.GetAxisRaw("Horizontal");
+        
         //move
         Vector2 targetVelocity = new Vector2(left_right * speed, rb.velocity.y);
-        //rb.velocity = new Vector2(left_right * speed, rb.velocity.y);
+     
         rb.velocity = Vector2.SmoothDamp(rb.velocity, targetVelocity, ref currentVelocity, smoothTime);
         flip();
 
@@ -150,39 +145,12 @@ public void StopMoveRight()
         {
             anim.SetFloat("move", 0);
         }
-        //anim.SetFloat("move", Mathf.Abs(left_right));
+      
         if (!Input.GetMouseButton(0))
         {
             left_right = 0;
         }
-            
-
-        //if (allowJump &&!Input.GetKey(KeyCode.Space))
-        //{
-
-        //    doubleJump = false;
-        //}
-        //if (allowJump && Input.GetKeyDown(KeyCode.Space))              
-        //{
-
-        //    if (allowJump || doubleJump)
-        //    {
-        //        rb.velocity = new Vector2(rb.velocity.x, height);
-        //        doubleJump = !doubleJump;
-        //    }
-
-        //}
-
-        //if (Input.GetMouseButtonDown(0))
-        //{
-        //    Debug.Log("create bullet");
-        //    GameObject bullet = Instantiate(bulletPrefab, gunTransform.position, Quaternion.identity);
-        //    shootingSound.clip = listAudios[0];
-        //    shootingSound.Play();
-        //    bullet.GetComponent<BulletController>().SetDirection(isFacingRight ? Vector2.right : Vector2.left);
-        //    bulletPrefab.SetActive(true);
-        //    Destroy(bullet, 2f);
-        //}
+           
     }
 
     private void OnTriggerEnter2D(Collider2D collision) //ortherhitboxes
@@ -239,7 +207,6 @@ public void StopMoveRight()
             {
                 climbInput = -1; 
             }
-            //float climbInput = Input.GetAxisRaw("Vertical");
             rb.velocity = new Vector2(rb.velocity.x, climbInput * climbSpeed);
         }
     }
